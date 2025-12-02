@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BIOL 2230 Grade Calculator</title>
+
+<style>
+    body {
+        background: #3B4252;
+        font-family: sans-serif;
+        padding: 40px;
+        color: #ECEFF4;
+    }
+
+    .card {
+        max-width: 360px;
+        background: #2E3440;
+        padding: 20px;
+        border-radius: 16px;
+        margin: auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        color: #88C0D0;
+        font-size: 20px;
+    }
+
+    input {
+        width: 100%;
+        background: #434C5E;
+        border: 1px solid #4C566A;
+        border-radius: 8px;
+        padding: 6px;
+        margin-top: 4px;
+        margin-bottom: 12px;
+        color: #ECEFF4;
+        -moz-appearance: textfield;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="card">
+    <h2>Course Total</h2>
+
+    Exam 1  
+    <input id="exam1" type="number" oninput="calculate()">
+
+    Exam 2  
+    <input id="exam2" type="number" oninput="calculate()">
+
+    Exam 3  
+    <input id="exam3" type="number" oninput="calculate()">
+
+    Lecture Extra Credit  
+    <input id="lecEC" type="number" oninput="calculate()">
+
+    Lecture Final Exam  
+    <input id="finalExam" type="number" oninput="calculate()">
+
+    Lab Points  
+    <input id="lab" type="number" oninput="calculate()">
+
+    <div id="results">
+        <strong>Exam Replacement:</strong> <span id="replacementNote">—</span><br><br>
+
+        <strong>Course total:</strong> <span id="totalPoints">0</span> / 550  
+        (<span id="percent">0.00</span>%)<br>
+
+        <strong>Letter grade:</strong> <span id="letter">F</span><br><br>
+
+        <strong>Points needed for next thresholds</strong><br>
+        <div id="thresholds">You have an F. Points to D: 355.00, to C: 383.00, to B: 438.00, to A: 493.00.</div>
+    </div>
+</div>
+
+<script>
+
+function calculate() {
+    const e1 = Number(document.getElementById("exam1").value) || 0;
+    const e2 = Number(document.getElementById("exam2").value) || 0;
+    const e3 = Number(document.getElementById("exam3").value) || 0;
+    const finalExam = Number(document.getElementById("finalExam").value) || 0;
+    const lecEC = Number(document.getElementById("lecEC").value) || 0;
+    const lab = Number(document.getElementById("lab").value) || 0;
+
+    const exams = [e1, e2, e3];
+    const lowest = Math.min(...exams);
+
+    let replacementNote = "No exam replaced.";
+    let adjustedExams;
+
+    if (finalExam > lowest) {
+        const index = exams.indexOf(lowest);
+        replacementNote = "Final exam replaced Exam " + (index + 1) + ".";
+        adjustedExams = exams.slice();
+        adjustedExams[index] = finalExam;
+        adjustedExams.push(finalExam);
+    } else {
+        adjustedExams = [...exams, finalExam];
+    }
+
+    const examTotal = adjustedExams.reduce((a, b) => a + b, 0);
+    const totalPoints = examTotal + lecEC + lab;
+    const percent = (totalPoints / 550) * 100;
+
+    function grade(p) {
+        if (p >= 90) return "A";
+        if (p >= 80) return "B";
+        if (p >= 70) return "C";
+        if (p >= 60) return "D";
+        return "F";
+    }
+
+    const letter = grade(percent);
+
+    const neededD = Math.max(0, 330 - totalPoints).toFixed(2);
+    const neededC = Math.max(0, 385 - totalPoints).toFixed(2);
+    const neededB = Math.max(0, 440 - totalPoints).toFixed(2);
+    const neededA = Math.max(0, 495 - totalPoints).toFixed(2);
+
+    let thresholdText = "";
+
+    if (letter === "F") {
+        thresholdText =
+            `You have an F. Points to D: ${neededD}, to C: ${neededC}, to B: ${neededB}, to A: ${neededA}.`;
+    }
+    else if (letter === "D") {
+        thresholdText =
+            `You have a D. Points to C: ${neededC}, to B: ${neededB}, to A: ${neededA}.`;
+    }
+    else if (letter === "C") {
+        thresholdText =
+            `You have a C. Points to B: ${neededB}, to A: ${neededA}.`;
+    }
+    else if (letter === "B") {
+        thresholdText =
+            `You have a B. Points to A: ${neededA}.`;
+    }
+    else if (letter === "A") {
+        thresholdText = "You have an A. No higher threshold.";
+    }
+
+    document.getElementById("replacementNote").textContent = replacementNote;
+    document.getElementById("totalPoints").textContent = totalPoints.toFixed(2);
+    document.getElementById("percent").textContent = percent.toFixed(2);
+    document.getElementById("letter").textContent = letter;
+    document.getElementById("thresholds").textContent = thresholdText;
+}
+
+</script>
+
+</body>
+</html>
