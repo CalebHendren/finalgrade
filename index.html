@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Course Grade Calculator</title>
+    <title>Course Grade Calculator (Solarized Dark)</title>
 
     <style>
         :root{
@@ -219,7 +219,7 @@
         <div class="row"><label for="ex1">Exam 1 (0–100)</label><input id="ex1" type="number" min="0" max="100" step="1" value="" inputmode="decimal"></div>
         <div class="row"><label for="ex2">Exam 2 (0–100)</label><input id="ex2" type="number" min="0" max="100" step="1" value="" inputmode="decimal"></div>
         <div class="row"><label for="ex3">Exam 3 (0–100)</label><input id="ex3" type="number" min="0" max="100" step="1" value="" inputmode="decimal"></div>
-        <div class="row"><label for="ecLec">Lecture Extra Credit (0–10)</label><input id="ecLec" type="number" min="0" max="10" step="1" value="" inputmode="decimal"></div>
+        <div class="row"><label for="ecLec">Lecture Extra Credit (If any)</label><input id="ecLec" type="number" min="0" step="1" value="" inputmode="decimal"></div>
         <div class="row"><label for="labTotal">Total Lab Points (0–150)</label><input id="labTotal" type="number" min="0" max="150" step="1" value="" inputmode="decimal"></div>
         <div class="row"><label for="finalLec">Lecture Final Exam (0–100)</label><input id="finalLec" type="number" min="0" max="100" step="1" value="" inputmode="decimal"></div>
 
@@ -269,7 +269,7 @@
         const e2 = valNum('ex2', 0, 100);
         const e3 = valNum('ex3', 0, 100);
         const f  = valNum('finalLec', 0, 100);
-        const ec = valNum('ecLec', 0, 10);
+        const ec = valNum('ecLec', 0, Infinity);
 
         const exams = [e1, e2, e3];
         const minExam = Math.min(...exams);
@@ -349,8 +349,5 @@
 
     computeOverall();
 </script>
-</body>
-</html>
-
 </body>
 </html>
