@@ -266,6 +266,35 @@
         return v;
     }
 
+    function saveToLocalStorage(){
+        const data = {
+            ex1: document.getElementById('ex1').value,
+            ex2: document.getElementById('ex2').value,
+            ex3: document.getElementById('ex3').value,
+            ecLec: document.getElementById('ecLec').value,
+            labTotal: document.getElementById('labTotal').value,
+            finalLec: document.getElementById('finalLec').value
+        };
+        localStorage.setItem('microGradeData', JSON.stringify(data));
+    }
+
+    function loadFromLocalStorage(){
+        const saved = localStorage.getItem('microGradeData');
+        if (saved){
+            try {
+                const data = JSON.parse(saved);
+                if (data.ex1) document.getElementById('ex1').value = data.ex1;
+                if (data.ex2) document.getElementById('ex2').value = data.ex2;
+                if (data.ex3) document.getElementById('ex3').value = data.ex3;
+                if (data.ecLec) document.getElementById('ecLec').value = data.ecLec;
+                if (data.labTotal) document.getElementById('labTotal').value = data.labTotal;
+                if (data.finalLec) document.getElementById('finalLec').value = data.finalLec;
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+            }
+        }
+    }
+
     function calcLecture(){
         const e1 = valNum('ex1', 0, 100);
         const e2 = valNum('ex2', 0, 100);
@@ -339,6 +368,8 @@
             lines.push(`You have an F. Points to D: ${fmt(T.D - course)}, to C: ${fmt(T.C - course)}, to B: ${fmt(T.B - course)}, to A: ${fmt(T.A - course)}.`);
         }
         document.getElementById('targets').textContent = lines.join(' ');
+        
+        saveToLocalStorage();
     }
 
     const allInputs = Array.from(document.querySelectorAll('input[type="number"]'));
@@ -346,9 +377,11 @@
 
     document.getElementById('resetAll').addEventListener('click', ()=>{
         allInputs.forEach(i => i.value = '');
+        localStorage.removeItem('microGradeData');
         computeOverall();
     });
 
+    loadFromLocalStorage();
     computeOverall();
 </script>
 </body>
